@@ -1,12 +1,14 @@
 package routes
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
+	"task-manager/api/internal/updater"
 )
 
 func NewRouter() http.Handler {
-	mux := http.NewServeMux()
+	mux := http.NewServeMux() // this is new server multiplexer
 
 	mux.HandleFunc("/", indexHandler)
 	mux.HandleFunc("/hello", helloHandler)
@@ -34,6 +36,28 @@ func getTaskHandler(w http.ResponseWriter, r *http.Request) {
 
 func postTaskHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "post task\n")
+
+	var req updater.CreateTaskRequest
+
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields() // optional but recommended
+
+	if err := decoder.Decode(&req); err != nil {
+		http.Error(w, "invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	// Validate basic fields
+	if req.Title == "" {
+		http.Error(w, "title is required", http.StatusBadRequest)
+		return
+	}
+
+	updater.UpdateTask(req)
+
+	json.NewEncoder(w).Encode(map[string]string{
+		"message": "task created",
+	})
 }
 
 func deleteTaskHandler(w http.ResponseWriter, r *http.Request) {
