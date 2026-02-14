@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"task-manager/goProjectStructure/internal/routes"
+	"task-manager/api/internal/routes"
 )
 
 func hello(w http.ResponseWriter, req *http.Request) {

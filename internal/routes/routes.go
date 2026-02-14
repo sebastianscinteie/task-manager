@@ -10,7 +10,12 @@ func NewRouter() http.Handler {
 
 	mux.HandleFunc("/", indexHandler)
 	mux.HandleFunc("/hello", helloHandler)
-	mux.HandleFunc("/headers", headersHandler)
+
+	// TASKS
+	mux.HandleFunc("GET /task", getTaskHandler)
+	mux.HandleFunc("POST /task", postTaskHandler)
+	// mux.HandleFunc("PUT /task", putTaskHandler)
+	mux.HandleFunc("DELETE /task", deleteTaskHandler)
 
 	return mux
 }
@@ -23,12 +28,14 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "hello\n")
 }
 
-func headersHandler(w http.ResponseWriter, r *http.Request) {
+func getTaskHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "get task\n")
+}
 
-	for name, headers := range r.Header {
-		for _, h := range headers {
-			fmt.Fprintf(w, "%v: %v\n", name, h)
-		}
-	}
+func postTaskHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "post task\n")
+}
 
+func deleteTaskHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "delete task\n")
 }
